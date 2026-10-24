@@ -208,6 +208,17 @@ export default function WorksWheel() {
   }, []);
 
   useEffect(() => {
+    if (modalClient) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [modalClient]);
+
+  useEffect(() => {
     const containerEl = containerRef.current;
     const stageEl = stageRef.current;
     const wheelEl = wheelRef.current;
@@ -498,7 +509,7 @@ export default function WorksWheel() {
                     <div className="pointer-events-none absolute left-4 bottom-3.5 right-4 flex items-end justify-between">
                       <div className="max-w-[85%]">
                         <span className="text-[10px] font-mono text-cyan-400 tracking-wider uppercase">
-                          {client.number} // {client.category}
+                          {`${client.number} // ${client.category}`}
                         </span>
                         <h4 className="font-hero text-sm sm:text-base text-white uppercase tracking-tight truncate mt-0.5 drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
                           {client.title}
@@ -563,7 +574,7 @@ export default function WorksWheel() {
             <div className="flex items-start justify-between border-b border-zinc-800/80 pb-4">
               <div>
                 <p className="text-[10px] font-mono tracking-[0.25em] text-cyan-400 uppercase">
-                  {modalClient.category} // {modalClient.number}
+                  {`${modalClient.category} // ${modalClient.number}`}
                 </p>
                 <h3 className="font-hero text-2xl sm:text-4xl uppercase tracking-tight text-white leading-none mt-1">
                   {modalClient.title}

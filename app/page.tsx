@@ -137,7 +137,7 @@ export default function Home() {
         </div>
 
         {/* LAYER 4: MAIN INTERACTIVE UI CONTENT */}
-        <main className="relative z-[20] flex-1 flex flex-col justify-between px-6 md:px-12 lg:px-16 pt-6 md:pt-10 pb-10 w-full max-w-[1500px] mx-auto pointer-events-none">
+        <div className="relative z-[20] flex-1 flex flex-col justify-between px-6 md:px-12 lg:px-16 pt-6 md:pt-10 pb-10 w-full max-w-[1500px] mx-auto pointer-events-none">
           <div className="w-full invisible pointer-events-none pt-2 sm:pt-4 md:pt-6" aria-hidden="true">
             <h1 className="flex flex-col items-center justify-center leading-[0.88] tracking-[-0.025em] uppercase font-hero text-center w-full">
               <span className="text-[15vw] md:text-[14.5vw] lg:text-[13.5vw]">SOFTWARE</span>
@@ -163,7 +163,7 @@ export default function Home() {
               </a>
             </div>
           </div>
-        </main>
+        </div>
 
         {/* BOTTOM SEAMLESS CINEMATIC VIGNETTE */}
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black via-black/80 to-transparent z-[50]" />

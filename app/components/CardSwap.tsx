@@ -107,24 +107,27 @@ export const CardSwap = forwardRef<CardSwapHandle, CardSwapProps>(
     },
     ref
   ) => {
-    const config =
-      easing === "elastic"
-        ? {
-            ease: "elastic.out(0.6,0.9)",
-            durDrop: 1.8,
-            durMove: 1.8,
-            durReturn: 1.8,
-            promoteOverlap: 0.9,
-            returnDelay: 0.05,
-          }
-        : {
-            ease: "power1.inOut",
-            durDrop: 0.8,
-            durMove: 0.8,
-            durReturn: 0.8,
-            promoteOverlap: 0.45,
-            returnDelay: 0.2,
-          };
+    const config = useMemo(
+      () =>
+        easing === "elastic"
+          ? {
+              ease: "elastic.out(0.6,0.9)",
+              durDrop: 1.8,
+              durMove: 1.8,
+              durReturn: 1.8,
+              promoteOverlap: 0.9,
+              returnDelay: 0.05,
+            }
+          : {
+              ease: "power1.inOut",
+              durDrop: 0.8,
+              durMove: 0.8,
+              durReturn: 0.8,
+              promoteOverlap: 0.45,
+              returnDelay: 0.2,
+            },
+      [easing]
+    );
 
     const childArr = useMemo(
       () => Children.toArray(children) as ReactElement<CardProps>[],
@@ -132,7 +135,7 @@ export const CardSwap = forwardRef<CardSwapHandle, CardSwapProps>(
     );
     const refs = useMemo<CardRef[]>(
       () => childArr.map(() => React.createRef<HTMLDivElement>()),
-      [childArr.length]
+      [childArr]
     );
     const order = useRef<number[]>(
       Array.from({ length: childArr.length }, (_, i) => i)
@@ -251,20 +254,24 @@ export const CardSwap = forwardRef<CardSwapHandle, CardSwapProps>(
         node.addEventListener("mouseenter", pause);
         node.addEventListener("mouseleave", resume);
         return () => {
+          tlRef.current?.kill();
           node.removeEventListener("mouseenter", pause);
           node.removeEventListener("mouseleave", resume);
           clearInterval(intervalRef.current);
         };
       }
 
-      return () => clearInterval(intervalRef.current);
+      return () => {
+        tlRef.current?.kill();
+        clearInterval(intervalRef.current);
+      };
     }, [
       cardDistance,
       verticalDistance,
       delay,
       pauseOnHover,
       skewAmount,
-      easing,
+      config,
       height,
       refs,
       onActiveIndexChange,

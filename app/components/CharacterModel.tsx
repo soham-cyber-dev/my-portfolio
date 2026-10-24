@@ -5,11 +5,7 @@ import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 
-interface CharacterModelProps {
-  cursorPos?: { x: number; y: number; isInside: boolean };
-}
-
-export default function CharacterModel({ cursorPos }: CharacterModelProps) {
+export default function CharacterModel() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [loading, setLoading] = useState(true);
   const [loadProgress, setLoadProgress] = useState(0);

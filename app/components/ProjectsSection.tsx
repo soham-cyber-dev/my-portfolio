@@ -154,6 +154,18 @@ export default function ProjectsSection() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
+  // Body scroll lock when modal is open
+  useEffect(() => {
+    if (modalProject) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [modalProject]);
+
   // Scroll kinematics & Parallax Engine
   useEffect(() => {
     let animId: number;

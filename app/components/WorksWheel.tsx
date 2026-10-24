@@ -245,18 +245,20 @@ export default function WorksWheel() {
       const isTablet = w < 1024;
       // Proportional, prominent sizing: 480px on desktop
       const cardW = isMobile
-        ? Math.min(w * 0.82, 335)
+        ? Math.min(w * 0.74, 290)
         : isTablet
         ? Math.min(w * 0.42, 410)
         : Math.min(h * CARD_H_FACTOR * CARD_RATIO, w * CARD_MAX_W_FACTOR, 480);
       const cardH = cardW / CARD_RATIO;
-      const drumR = cardH * DRUM_MULT;
-      const ringR = cardH * RING_MULT;
-      const ringScale = clamp(
-        (((2 * Math.PI * ringR) / count) * 0.82) / (cardW || 1),
-        0.62,
-        0.78
-      );
+      const drumR = isMobile ? cardH * 1.85 : cardH * DRUM_MULT;
+      const ringR = isMobile ? cardH * 0.96 : cardH * RING_MULT;
+      const ringScale = isMobile
+        ? 0.70
+        : clamp(
+            (((2 * Math.PI * ringR) / count) * 0.82) / (cardW || 1),
+            0.62,
+            0.78
+          );
       const bow = cardH * BOW_MULT;
       const depth = cardH * LENS_MULT;
 
@@ -302,7 +304,7 @@ export default function WorksWheel() {
       if (!isRunning) return;
       frameId = requestAnimationFrame(draw);
 
-      currentTurn.current += (targetTurn.current - currentTurn.current) * 0.12;
+      currentTurn.current += (targetTurn.current - currentTurn.current) * 0.14;
       currentMouse.current.x += (targetMouse.current.x - currentMouse.current.x) * 0.08;
       currentMouse.current.y += (targetMouse.current.y - currentMouse.current.y) * 0.08;
 

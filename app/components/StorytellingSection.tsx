@@ -56,7 +56,7 @@ const CHAOS_ITEMS: ChaosItem[] = [
     dScale: 0.75,
     depth: 1.0,
     baseRot: 1.8,
-    positionClass: "top-[7%] right-[4%] sm:right-[6%] md:top-[10%] md:right-[8%] lg:right-[10%]",
+    positionClass: "hidden sm:block top-[7%] right-[4%] sm:right-[6%] md:top-[10%] md:right-[8%] lg:right-[10%]",
     content: (
       <div className="p-3.5 rounded-xl bg-zinc-950/85 border border-zinc-800/90 backdrop-blur-md shadow-2xl max-w-[220px] sm:max-w-[260px]">
         <div className="flex items-center justify-between border-b border-zinc-800 pb-2 mb-2">
@@ -82,7 +82,7 @@ const CHAOS_ITEMS: ChaosItem[] = [
     dScale: 0.65,
     depth: 1.4,
     baseRot: -3.8,
-    positionClass: "top-[38%] sm:top-[36%] left-[3%] sm:left-[5%] md:left-[7%] lg:left-[9%]",
+    positionClass: "hidden sm:block top-[38%] sm:top-[36%] left-[3%] sm:left-[5%] md:left-[7%] lg:left-[9%]",
     content: (
       <div className="flex flex-col max-w-[200px] sm:max-w-[260px] md:max-w-[310px]">
         <div className="flex items-center gap-2 mb-1">
@@ -106,7 +106,7 @@ const CHAOS_ITEMS: ChaosItem[] = [
     dScale: 0.7,
     depth: 1.1,
     baseRot: 2.8,
-    positionClass: "top-[36%] sm:top-[34%] right-[3%] sm:right-[5%] md:right-[7%] lg:right-[9%]",
+    positionClass: "hidden sm:block top-[36%] sm:top-[34%] right-[3%] sm:right-[5%] md:right-[7%] lg:right-[9%]",
     content: (
       <div className="p-3.5 rounded-xl bg-zinc-950/85 border border-zinc-800/80 backdrop-blur-md shadow-2xl max-w-[190px] sm:max-w-[230px]">
         <div className="flex items-center justify-between mb-2">
@@ -138,7 +138,7 @@ const CHAOS_ITEMS: ChaosItem[] = [
     dScale: 0.75,
     depth: 0.9,
     baseRot: 1.5,
-    positionClass: "bottom-[8%] left-[4%] sm:left-[6%] md:bottom-[10%] md:left-[8%] lg:left-[10%]",
+    positionClass: "hidden sm:block bottom-[8%] left-[4%] sm:left-[6%] md:bottom-[10%] md:left-[8%] lg:left-[10%]",
     content: (
       <div className="p-3 rounded-xl bg-zinc-950/80 border border-zinc-800/80 backdrop-blur-md shadow-xl max-w-[220px] sm:max-w-[260px] md:max-w-[290px]">
         <div className="flex items-center gap-1.5 text-[10px] font-mono text-zinc-500 uppercase tracking-widest mb-1.5">
@@ -253,7 +253,7 @@ export default function StorytellingSection() {
         if (sd > 0) targetP.current = Math.max(0, Math.min(1, -rect.top / sd));
       }
 
-      currentP.current += (targetP.current - currentP.current) * 0.10;
+      currentP.current += (targetP.current - currentP.current) * 0.14;
       currentMouse.current.x += (targetMouse.current.x - currentMouse.current.x) * 0.08;
       currentMouse.current.y += (targetMouse.current.y - currentMouse.current.y) * 0.08;
 

@@ -119,7 +119,8 @@ export default function ProjectsSection() {
     const handleResize = () => {
       const w = window.innerWidth;
       if (w < 480) {
-        setCardDims({ width: 300, height: 210 });
+        const cardW = Math.min(w - 56, 310);
+        setCardDims({ width: cardW, height: Math.round(cardW * 0.65) });
       } else if (w < 768) {
         setCardDims({ width: 360, height: 240 });
       } else if (w < 1024) {
@@ -184,7 +185,7 @@ export default function ProjectsSection() {
       }
 
       currentProgress.current +=
-        (targetProgress.current - currentProgress.current) * 0.10;
+        (targetProgress.current - currentProgress.current) * 0.14;
       currentMouse.current.x +=
         (targetMouse.current.x - currentMouse.current.x) * 0.08;
       currentMouse.current.y +=
@@ -367,9 +368,9 @@ export default function ProjectsSection() {
         </div>
 
         {/* Main Content Area */}
-        <div className="relative z-10 w-full max-w-6xl mx-auto flex-1 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center my-auto">
+        <div className="relative z-10 w-full max-w-6xl mx-auto flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-14 items-center my-auto">
           {/* Left Column: Continuous Cross-Fade Project Information */}
-          <div className="lg:col-span-5 relative min-h-[300px] flex items-center">
+          <div className="order-2 lg:order-1 lg:col-span-5 relative min-h-[220px] sm:min-h-[260px] lg:min-h-[300px] flex items-center">
             {PROJECTS.map((proj, idx) => (
               <div
                 key={proj.id}
@@ -432,7 +433,7 @@ export default function ProjectsSection() {
           </div>
 
           {/* Right Column: 3D Perspective Card Stack */}
-          <div className="lg:col-span-7 flex items-center justify-center">
+          <div className="order-1 lg:order-2 lg:col-span-7 flex items-center justify-center">
             <div
               ref={stageRef}
               className="relative select-none will-change-transform"

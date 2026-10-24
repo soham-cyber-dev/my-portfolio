@@ -145,8 +145,8 @@ export default function Home() {
             </h1>
           </div>
 
-          <div className="w-full flex justify-end mt-12 md:mt-16 pointer-events-auto">
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-4 w-full md:w-auto">
+          <div className="w-full flex justify-center sm:justify-end mt-12 md:mt-16 pointer-events-auto">
+            <div className="flex flex-col sm:flex-row items-center sm:items-center justify-center sm:justify-end gap-4 w-full md:w-auto">
               <a
                 href="#about"
                 onClick={(e) => {

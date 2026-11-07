@@ -1,70 +1,55 @@
-# Soham Bhuniya — Portfolio & Digital Experience
+# Soham Bhuniya — Portfolio
 
-> **Full-Stack Software Developer & Systems Architect**  
-> *CSE Student · Tech Lead @ Google Developer Groups, UEM Kolkata · Kolkata, India*
+Full-Stack Software Developer & Systems Architect  
+CSE Student · Tech Lead @ Google Developer Groups, UEM Kolkata · Kolkata, India
 
-[![Next.js](https://img.shields.io/badge/Next.js-16.3.7-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
-[![React](https://img.shields.io/badge/React-19.2.8-blue?style=for-the-badge&logo=react)](https://react.dev/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
-[![Three.js](https://img.shields.io/badge/Three.js-WebGL-black?style=for-the-badge&logo=three.js)](https://threejs.org/)
-[![GSAP](https://img.shields.io/badge/GSAP-ScrollTrigger-green?style=for-the-badge&logo=greensock)](https://greensock.com/)
-[![Lenis](https://img.shields.io/badge/Lenis-Smooth_Scroll-black?style=for-the-badge)](https://lenis.darkroom.engineering/)
+- **Live URL:** https://my-portfolio-indol-nine-73.vercel.app/
+- **Repository:** https://github.com/soham-cyber-dev/my-portfolio
 
 ---
 
-## 🌟 The Dual-Mode Architectural Vision
+## Overview
 
-This portfolio is engineered around two distinct perspectives:
+A modern, high-performance portfolio engineered with Next.js, React, TypeScript, Three.js, and GSAP. The application is structured around two distinct operational modes:
 
-```
-┌────────────────────────────────────────────────────────┐
-│               SOHAM BHUNIYA PORTFOLIO                  │
-├──────────────────────────┬─────────────────────────────┤
-│   🎨 CREATIVE MODE (/)   │  ⚡ DEVELOPER MODE (/developer)
-│                          │                             │
-│ • 3D WebGL Character     │ • Minimalist CLI Terminal   │
-│ • Feathered Spotlight    │ • Soothing Black & Purple   │
-│ • Storytelling Expansion │ • Live Image Medallions     │
-│ • 3D Card Stack Swap     │ • Audio API Waveform Game   │
-│ • 360° Coin-Flip Clients │ • Directives & Auto-Complete│
-│ • Magnification Docks    │ • Zero-Bloat Performance    │
-└──────────────────────────┴─────────────────────────────┘
-```
-
-### 01. 🎨 Creative Mode (`/`)
-An immersive editorial showcase merging architectural precision with creative craft:
-- **Interactive 3D WebGL Hero:** Houses an interactive Three.js 3D character tracking head and eye coordinates with lerp damping, automatic frustum aspect preservation for mobile viewports, and `IntersectionObserver` GPU memory recycling.
-- **Feathered Spotlight Cursor:** Real-time 260px radial-gradient mask with 60fps lerp interpolation creating a soft, tactile flashlight reveal over dual-tone backdrop photography.
-- **Storytelling Narrative Expansion:** A 550vh cinematic scroll journey transitioning a 9:16 topographic contour card into full viewport canvas, dispersing chaotic technical elements into a clean, dual-panel editorial biography.
-- **3D Perspective Project Swap Stack:** An interactive card stack using custom smoothstep kinematics to physically cycle projects through 3D spatial depth upon scroll.
-- **Cinematic 360° Coin-Flip Client Works:** Deployed client projects rendered inside physical 3D medallions that flip with parabolic toss trajectories—guaranteeing upright, un-mirrored presentation across all rotation angles.
-- **macOS-Grade Magnification Docks:** Desktop and mobile magnification toolbars powered by Framer Motion spring physics.
-
-### 02. ⚡ Developer Mode (`/developer`)
-A retro-futuristic terminal console reimagined in a **soothing Black & Purple palette**:
-- **Aesthetic:** Deep obsidian base (`#0A0812`), lavender typography (`#EDE9FE`), electric violet prompt indicators (`#A855F7`), and soft lilac command echoes (`#C084FC`).
-- **Interactive CLI Directives:** `help`, `about`, `projects`, `clients`, `skills`, `experience`, `education`, `contact`, `github`, `linkedin`, `email`, `game`, `whoami`, `clear`, `history`, `exit`.
-- **Integrated Visual Medallions:** Displays circular portrait photos for `about` and verified circular client insignia medallions for `clients`.
-- **Keyboard Navigation:** Full Bash/Zsh-style command history (`ArrowUp` / `ArrowDown`), `Tab` autocompletion, and smooth auto-scroll.
-- **"Signal Lock" Calibration Mini-Game (`game`):** An analog dual-waveform oscilloscope calibration game. Features real-time frequency/amplitude wave rendering and procedural audio feedback synthesized via the **Web Audio API** (no external audio assets required).
+1. **Creative Mode (`/`)**: An editorial, motion-rich presentation featuring interactive 3D WebGL character tracking, a feathered spotlight mask, continuous scroll-driven storytelling, a 3D perspective card swap stack, 360-degree coin-flip client work medallions, and spring-physics magnification docks.
+2. **Developer Mode (`/developer`)**: A retro-futuristic, experimental terminal console built on a soothing black-and-purple palette. Features custom CLI directives, command history, tab auto-completion, live client logo medallions, and a playable dual-waveform oscilloscope calibration mini-game powered by the native Web Audio API.
 
 ---
 
-## 🛠️ Technical Stack & Dependencies
+## Features
+
+### Creative Mode
+- **Interactive 3D WebGL Model:** Three.js character tracking cursor coordinates with lerp damping, responsive frustum compensation, and automatic GPU resource recycling via `IntersectionObserver`.
+- **Spotlight Mask Interaction:** Dual-layer background reveal guided by a 260px feathered circular mask following cursor movement.
+- **Scroll-Driven Storytelling:** 550vh cinematic timeline expanding a 9:16 topographic frame into full viewport while staggering editorial background elements.
+- **3D Card Stack Kinematics:** Perspective-transformed project cards cycling smoothly through 3D space on scroll.
+- **360-Degree Coin-Flip Client Works:** Deployed client projects presented in dual-sided 3D medallions using parabolic rotation arcs that guarantee upright, un-mirrored presentation across all angles.
+- **Spring-Physics Magnification Docks:** Desktop and mobile navigation docks built with Framer Motion spring physics.
+
+### Developer Mode
+- **Minimalist Console Interface:** Styled in a deep obsidian, lavender, and electric violet palette (`#0A0812`, `#EDE9FE`, `#A855F7`, `#C084FC`).
+- **Interactive Command Parser:** Supports commands including `help`, `about`, `projects`, `clients`, `skills`, `experience`, `education`, `contact`, `github`, `linkedin`, `email`, `game`, `clear`, `history`, `exit`, and `whoami`.
+- **Integrated Medallions:** Displays circular photographic portraits for identity and circular vector medallions for client case studies.
+- **Terminal Ergonomics:** Standard command history traversal (`ArrowUp` / `ArrowDown`), `Tab` auto-completion, and isolated native scroll containment (`data-lenis-prevent`).
+- **Signal Lock Mini-Game:** Canvas dual-waveform calibration game with real-time procedural sound effects synthesized entirely via the native Web Audio API.
+
+---
+
+## Technical Stack
 
 | Layer | Technologies |
 |---|---|
-| **Framework & Engine** | Next.js 16 (Turbopack, App Router), React 19, TypeScript 5 |
-| **Styling & Design** | Tailwind CSS v4, Lucide Icons, Custom Web Fonts (Anton, Inter, Space Grotesk) |
-| **3D & Graphics** | Three.js (GLTFLoader, ACESFilmicToneMapping, SRGBColorSpace) |
-| **Kinematics & Motion** | GSAP 3 (ScrollTrigger), Lenis Smooth Scroll, Framer Motion |
+| **Core Framework** | Next.js 16 (Turbopack, App Router), React 19, TypeScript 5 |
+| **Styling** | Tailwind CSS v4, Lucide Icons |
+| **Graphics & 3D** | Three.js (GLTFLoader, ACESFilmicToneMapping, SRGBColorSpace) |
+| **Animation & Scroll** | GSAP 3 (ScrollTrigger), Lenis Smooth Scroll, Framer Motion |
 | **Audio Synthesis** | Native Web Audio API (`AudioContext`, Oscillator & Gain Envelopes) |
-| **Security & Production** | Custom HTTP Security Headers, `.htaccess` Hardening, SEO Sitemap & Robots |
+| **Deployment & Security** | Vercel Edge Network, HTTP Security Headers, `.htaccess` |
 
 ---
 
-## 📁 Directory Structure
+## Project Structure
 
 ```
 my-portfolio/
@@ -72,108 +57,78 @@ my-portfolio/
 │   ├── components/
 │   │   ├── CharacterModel.tsx      # Three.js 3D character tracking & WebGL engine
 │   │   ├── Footer.tsx              # Monumental typography & dual magnification docks
-│   │   ├── MagnificationDock.tsx   # Framer Motion spring-physics dock component
+│   │   ├── MagnificationDock.tsx   # Spring-physics dock component
 │   │   ├── ProjectsSection.tsx     # 3D perspective card stack project showcase
-│   │   ├── SmoothScroll.tsx        # Apple-grade Lenis smooth physics provider
-│   │   ├── StorytellingSection.tsx # 550vh topographic scroll storytelling section
-│   │   └── WorksWheel.tsx          # 360° parabolic coin-flip client medallion stage
+│   │   ├── SmoothScroll.tsx        # Lenis smooth scroll provider
+│   │   ├── StorytellingSection.tsx # Scroll storytelling section with topographic background
+│   │   └── WorksWheel.tsx          # 360-degree coin-flip client medallion stage
 │   ├── developer/
 │   │   ├── components/
 │   │   │   ├── CommandOutputs.tsx  # Terminal directives & medallion visual renders
-│   │   │   ├── Oscilloscope.tsx    # Standalone canvas phosphor oscilloscope
-│   │   │   └── SignalLockGame.tsx  # Analog dual-waveform calibration game
+│   │   │   ├── Oscilloscope.tsx    # Canvas phosphor oscilloscope
+│   │   │   └── SignalLockGame.tsx  # Analog dual-waveform calibration mini-game
 │   │   ├── data/
 │   │   │   └── portfolioData.ts    # Centralized portfolio & client architecture data
 │   │   ├── utils/
-│   │   │   └── audio.ts            # Web Audio API mechanical sound synthesis engine
+│   │   │   └── audio.ts            # Web Audio API sound synthesis engine
 │   │   └── page.tsx                # Terminal CLI container & directive engine
-│   ├── globals.css                 # Tailwind CSS v4 imports & editorial typography
-│   ├── layout.tsx                  # Root layout, metadata, SEO & OpenGraph tags
+│   ├── globals.css                 # Global Tailwind CSS styles and font configurations
+│   ├── layout.tsx                  # Root layout, metadata, and SEO directives
 │   └── page.tsx                    # Creative Mode root page
 ├── public/
-│   ├── 3d-model/                   # 3D cartoon character GLTF/GLB model
-│   ├── client-logos/               # Vector & high-res production client logos
-│   ├── .htaccess                   # Production Apache/LiteSpeed security rules
-│   ├── robots.txt                  # Search crawler directives
-│   └── sitemap.xml                 # Search engine index mapping
-├── .htaccess                       # Root Apache/LiteSpeed fallback configuration
-├── next.config.ts                  # Production HTTP security headers & compression
-├── package.json                    # Dependencies & build scripts
-└── tsconfig.json                   # Strict TypeScript compiler options
+│   ├── 3d-model/                   # 3D character GLTF/GLB model
+│   ├── client-logos/               # Client brand marks and logos
+│   ├── .htaccess                   # Apache/LiteSpeed security and caching configuration
+│   ├── robots.txt                  # Search engine crawler directives
+│   └── sitemap.xml                 # Search engine site index
+├── next.config.ts                  # Next.js security headers and compression settings
+├── package.json                    # Project dependencies and scripts
+└── tsconfig.json                   # TypeScript configuration
 ```
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
-- **Node.js:** `v18.18.0` or higher (recommended: `v20+`)
-- **Package Manager:** `npm`, `yarn`, `pnpm`, or `bun`
+- Node.js 18.18.0 or higher
+- npm, yarn, pnpm, or bun
 
-### Installation
-```bash
-# Clone repository
-git clone https://github.com/soham-cyber-dev/my-portfolio.git
+### Installation & Setup
 
-# Enter project directory
-cd my-portfolio
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/soham-cyber-dev/my-portfolio.git
+   cd my-portfolio
+   ```
 
-# Install dependencies
-npm install
-```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-### Local Development
-```bash
-# Start Turbopack development server
-npm run dev
-```
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+3. Start the local development server:
+   ```bash
+   npm run dev
+   ```
 
-### Quality Verification
-```bash
-# Run ESLint validation
-npm run lint
+4. Build for production:
+   ```bash
+   npm run build
+   ```
 
-# Build for production
-npm run build
-```
-
----
-
-## 🌐 Deploying to Vercel (Free & Instant)
-
-Deploying to [Vercel](https://vercel.com/) is completely free and requires zero additional configuration:
-
-1. Push your repository to GitHub.
-2. Sign in to [Vercel](https://vercel.com/) and click **"Add New Project"**.
-3. Import your `my-portfolio` repository.
-4. Vercel automatically detects **Next.js**:
-   - **Framework Preset:** `Next.js`
-   - **Root Directory:** `./`
-   - **Build Command:** `next build`
-   - **Output Directory:** `.next`
-5. Click **Deploy**. Vercel will build, optimize, and assign a global CDN domain (e.g., `https://your-portfolio.vercel.app`) with free automated SSL certificates.
+5. Run static linting:
+   ```bash
+   npm run lint
+   ```
 
 ---
 
-## 🔒 Security Hardening
+## Contact
 
-- **HTTP Strict Transport Security (HSTS):** `max-age=63072000; includeSubDomains; preload`
-- **Clickjacking Defense:** `X-Frame-Options: DENY`
-- **MIME Sniffing Prevention:** `X-Content-Type-Options: nosniff`
-- **Information Obfuscation:** `X-Powered-By` header disabled.
-- **Sensitive File Shield:** Hardened `.htaccess` rules denying access to `.env*`, `.git`, `.DS_Store`, and configuration files.
-
----
-
-## 📬 Contact & Connect
-
-**Soham Bhuniya**  
-- **Email:** [sohambhuniya2021@gmail.com](mailto:sohambhuniya2021@gmail.com)  
-- **GitHub:** [@soham-cyber-dev](https://github.com/soham-cyber-dev)  
-- **LinkedIn:** [soham-bhuniya-cyber-dev](https://www.linkedin.com/in/soham-bhuniya-cyber-dev)  
-- **Instagram:** [@_its_soham_](https://www.instagram.com/_its_soham_)
-
----
-
-*Designed & Engineered by Soham Bhuniya © 2026. All rights reserved.*
+- **Name:** Soham Bhuniya
+- **Email:** sohambhuniya2021@gmail.com
+- **Website:** https://my-portfolio-indol-nine-73.vercel.app/
+- **GitHub:** https://github.com/soham-cyber-dev
+- **LinkedIn:** https://www.linkedin.com/in/soham-bhuniya-cyber-dev
+- **Instagram:** https://www.instagram.com/_its_soham_

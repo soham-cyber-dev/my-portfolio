@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { X, ArrowUpRight, CheckCircle2, Globe } from "lucide-react";
@@ -32,9 +32,9 @@ const CLIENT_WORKS: ClientWork[] = [
     subtitle: "High-End Media Production Studio",
     description:
       "A high-impact digital platform engineered for a premier creative production studio. Features responsive full-viewport video showcases, fluid transitions, and optimized high-definition streaming across devices.",
-    image: "/MotionMediaCircle.png",
-    website: "themotionmediacircle.com",
-    websiteUrl: "https://themotionmediacircle.com",
+    image: "/client-logos/motion-media-circle.svg",
+    website: "motionmediacircle.com",
+    websiteUrl: "https://motionmediacircle.com",
     services: ["Web Development", "Responsive Design", "Frontend Architecture", "Video CDN"],
     deliverables: [
       "Custom Digital Agency Experience",
@@ -51,7 +51,7 @@ const CLIENT_WORKS: ClientWork[] = [
     subtitle: "Real Estate & Digital Workflow Intelligence",
     description:
       "Modern full-stack web application combined with automated AI intelligence workflows. Engineered for real estate lead generation, automated property indexing, and instant prospect follow-up pipelines.",
-    image: "/ThePrimeAvenues.png",
+    image: "/client-logos/the-prime-avenues.jpeg",
     website: "theprimeavenues.com",
     websiteUrl: "https://theprimeavenues.com",
     services: ["Full-Stack Web", "AI Automation", "Workflow Pipeline", "REST API"],
@@ -70,7 +70,7 @@ const CLIENT_WORKS: ClientWork[] = [
     subtitle: "Digital Infrastructure & Reliability",
     description:
       "Groundwork technical infrastructure and ongoing website reliability engineering for a premier event agency. Delivers zero-downtime reliability, server speed optimizations, and security monitoring during peak marketing traffic.",
-    image: "/Social - a -fair.png",
+    image: "/client-logos/social-a-fair.png",
     website: "socialafair.com",
     websiteUrl: "https://socialafair.com",
     services: ["Website Maintenance", "Technical Groundwork", "Performance Audits", "Cloud Reliability"],
@@ -89,7 +89,7 @@ const CLIENT_WORKS: ClientWork[] = [
     subtitle: "Executive Editorial Web Presence",
     description:
       "A custom-crafted editorial digital portfolio built for distinguished executive leadership and architectural presentation. Emphasizes typography, negative space, and smooth interactive galleries.",
-    image: "/Tilak ranjan Dhali.png",
+    image: "/client-logos/tilak-ranjan-dhali.png",
     website: "tilakranjandhali.in",
     websiteUrl: "https://tilakranjandhali.in",
     services: ["Editorial Portfolio", "Modern UI", "Frontend Engineering", "Micro-Interactions"],
@@ -102,72 +102,159 @@ const CLIENT_WORKS: ClientWork[] = [
   },
 ];
 
-// Constants for 3D Geometry
-const CARD_RATIO = 1.5;
-const CARD_H_FACTOR = 0.38;
-const CARD_MAX_W_FACTOR = 0.36;
-const STEP_DEG = 40;
-const DRUM_MULT = 2.15;
-const RING_MULT = 1.12;
-const BOW_MULT = 1.65;
-const LENS_MULT = 2.75;
-const CULL_DIST = 1.75;
-
+// Constants & Utilities
 const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v));
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
-const rad = (deg: number) => (deg * Math.PI) / 180;
-const bowAt = (drumDeg: number, bow: number) => -bow * (1 - Math.cos(rad(drumDeg)));
 
-// Core 3D transformation with dynamic 3D wheel pitch & card tilts in static mode
-function place(
-  ringDeg: number,
-  drumDeg: number,
-  ringR: number,
-  drumR: number,
-  bow: number,
-  m: number
-) {
-  // In the static wheel view (m = 0), tilt cards on X and Y axes to produce a genuine 3D wheel/turbine aesthetic
-  const ringTiltX = (1 - m) * 20;
-  const ringTiltY = (1 - m) * -12;
-  const ringZ = (1 - m) * -20;
-
-  return (
-    `translateX(${(m * bowAt(drumDeg, bow)).toFixed(1)}px)` +
-    ` rotateZ(${((1 - m) * ringDeg).toFixed(2)}deg)` +
-    ` translateY(${(-(1 - m) * ringR).toFixed(1)}px)` +
-    ` rotateX(${(lerp(ringTiltX, drumDeg, m)).toFixed(2)}deg)` +
-    ` rotateY(${ringTiltY.toFixed(2)}deg)` +
-    ` translateZ(${(lerp(ringZ, drumR, m)).toFixed(1)}px)`
-  );
+interface CoinState {
+  x: number;
+  y: number;
+  z: number;
+  rotY: number;
+  scale: number;
+  opacity: number;
 }
 
-function progressToTurn(prog: number, count: number): number {
-  if (prog <= 0.04) {
-    return 0; // Hold on all-clients radial showcase
-  } else if (prog <= 0.20) {
-    const u = (prog - 0.04) / 0.16;
-    const smooth = u * u * (3 - 2 * u);
-    return smooth; // 0 -> 1 morph into 3D drum reel
-  } else {
-    const u = (prog - 0.20) / 0.80;
-    const segments = count - 1;
-    const val = u * segments;
-    const base = Math.min(Math.floor(val), segments - 1);
-    const frac = val - base;
-
-    let smoothFrac: number;
-    if (frac <= 0.22) {
-      smoothFrac = 0;
-    } else if (frac >= 0.78) {
-      smoothFrac = 1;
-    } else {
-      const p = (frac - 0.22) / 0.56;
-      smoothFrac = p * p * (3 - 2 * p);
-    }
-
-    return 1 + base + smoothFrac;
+/**
+ * Maps pinned scroll progress to:
+ * 1. morph: Smooth transition (0 -> 1) from the static horizontal overview to 3D center stage.
+ * 2. turn: Continuous client focus index [0, 3] with generous, stable resting plateaus.
+ */
+function progressToTurnAndMorph(prog: number): { turn: number; morph: number } {
+  // Phase 0: Minimal static overview of all 4 client logos (zero noise)
+  if (prog <= 0.08) {
+    return { turn: 0, morph: 0 };
   }
+
+  // Phase 1: Smooth convergence into the 3D coin stage
+  if (prog <= 0.18) {
+    const p = (prog - 0.08) / 0.10;
+    const morph = p * p * (3 - 2 * p); // smooth Hermite ease
+    return { turn: 0, morph };
+  }
+
+  // Phase 2: Sequential 3D Coin-Flip timeline with cinematic pacing
+  let turn = 0;
+  if (prog < 0.34) {
+    // Client 0 Focus Plateau
+    turn = 0;
+  } else if (prog < 0.46) {
+    // Coin Flip: Client 0 -> Client 1
+    const p = (prog - 0.34) / 0.12;
+    const s = p * p * (3 - 2 * p);
+    turn = 0 + s;
+  } else if (prog < 0.60) {
+    // Client 1 Focus Plateau
+    turn = 1;
+  } else if (prog < 0.72) {
+    // Coin Flip: Client 1 -> Client 2
+    const p = (prog - 0.60) / 0.12;
+    const s = p * p * (3 - 2 * p);
+    turn = 1 + s;
+  } else if (prog < 0.86) {
+    // Client 2 Focus Plateau
+    turn = 2;
+  } else if (prog < 0.96) {
+    // Coin Flip: Client 2 -> Client 3
+    const p = (prog - 0.86) / 0.10;
+    const s = p * p * (3 - 2 * p);
+    turn = 2 + s;
+  } else {
+    // Client 3 Focus Plateau
+    turn = 3;
+  }
+
+  return { turn, morph: 1 };
+}
+
+/**
+ * Calculates 3D transformation for coin `i`:
+ * - Flips forward with a 360° parabolic coin toss (never backwards/mirrored).
+ * - Rests perfectly upright at 0° or 360° (geometrically identical to 0°).
+ * - Smoothly morphs from the horizontal static row into center focus.
+ */
+function calculateCoinState(
+  i: number,
+  turn: number,
+  morph: number,
+  spacing: number,
+  staticScale: number
+): CoinState {
+  const d = turn - i;
+
+  // 1. Static state (morph = 0): clean horizontal logo row
+  const staticX = (i - 1.5) * spacing;
+  const staticY = 0;
+  const staticZ = 0;
+  const staticRotY = 0;
+  const staticSc = staticScale;
+  const staticOp = 1.0;
+
+  // 2. 3D Coin-flip state (morph = 1):
+  let rotY = 0;
+  let posZ = 0;
+  let posY = 0;
+  let posX = 0;
+  let scale = 1.0;
+  let opacity = 1.0;
+
+  // Rotation baseline: client 0 rests at 0°, clients 1..3 rest at 360° (facing front)
+  const restRotY = i === 0 ? 0 : 360;
+
+  if (d < -0.55) {
+    // In queue behind current client
+    rotY = 0;
+    posZ = -140;
+    posY = 20;
+    posX = 0;
+    scale = 0.80;
+    opacity = 0;
+  } else if (d < 0) {
+    // FLIPPING IN: 0° -> 360° with parabolic coin toss arc
+    const p = (d - -0.55) / 0.55; // 0 -> 1
+    const s = p * p * (3 - 2 * p);
+    rotY = s * restRotY;
+    posZ = -140 * (1 - s) + Math.sin(p * Math.PI) * 110;
+    posY = 20 * (1 - s) - Math.sin(p * Math.PI) * 25;
+    posX = 0;
+    scale = 0.80 + s * 0.25;
+    opacity = Math.min(1.0, p * 3.0);
+  } else if (d === 0) {
+    // FOCUS PLATEAU: Perfectly centered, upright logo facing user
+    rotY = restRotY;
+    posZ = 0;
+    posY = 0;
+    posX = 0;
+    scale = 1.05;
+    opacity = 1.0;
+  } else if (d <= 0.55) {
+    // FLIPPING OUT: 360° exit toss into queue
+    const p = d / 0.55; // 0 -> 1
+    const s = p * p * (3 - 2 * p);
+    rotY = restRotY + s * 360;
+    posZ = -Math.sin(p * Math.PI) * 40 - s * 140;
+    posY = -Math.sin(p * Math.PI) * 20 - s * 20;
+    posX = 0;
+    scale = 1.05 - s * 0.25;
+    opacity = Math.max(0, 1.0 - s * 2.5);
+  } else {
+    // Exited
+    rotY = restRotY + 360;
+    posZ = -140;
+    posY = -20;
+    posX = 0;
+    scale = 0.80;
+    opacity = 0;
+  }
+
+  return {
+    x: lerp(staticX, posX, morph),
+    y: lerp(staticY, posY, morph),
+    z: lerp(staticZ, posZ, morph),
+    rotY: lerp(staticRotY, rotY, morph),
+    scale: lerp(staticSc, scale, morph),
+    opacity: lerp(staticOp, opacity, morph),
+  };
 }
 
 export default function WorksWheel() {
@@ -175,8 +262,7 @@ export default function WorksWheel() {
   const stageRef = useRef<HTMLDivElement>(null);
   const wheelRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const cardFaceRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const cardImgRefs = useRef<(HTMLImageElement | null)[]>([]);
+  const textRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   const [activeItem, setActiveItem] = useState(0);
   const [isRingView, setIsRingView] = useState(true);
@@ -185,6 +271,8 @@ export default function WorksWheel() {
   const count = CLIENT_WORKS.length;
   const targetTurn = useRef(0);
   const currentTurn = useRef(0);
+  const targetMorph = useRef(0);
+  const currentMorph = useRef(0);
   const targetMouse = useRef({ x: 0, y: 0 });
   const currentMouse = useRef({ x: 0, y: 0 });
 
@@ -229,7 +317,10 @@ export default function WorksWheel() {
 
     const lenis = (
       window as unknown as {
-        __lenis?: { on: (event: string, cb: () => void) => void };
+        __lenis?: {
+          on: (event: string, cb: () => void) => void;
+          off?: (event: string, cb: () => void) => void;
+        };
       }
     ).__lenis;
 
@@ -243,26 +334,26 @@ export default function WorksWheel() {
 
       const isMobile = w < 768;
       const isTablet = w < 1024;
-      // Proportional, prominent sizing: 480px on desktop
-      const cardW = isMobile
+
+      // Base coin diameter in center showcase mode
+      const coinSize = isMobile
         ? Math.min(w * 0.74, 290)
         : isTablet
-        ? Math.min(w * 0.42, 410)
-        : Math.min(h * CARD_H_FACTOR * CARD_RATIO, w * CARD_MAX_W_FACTOR, 480);
-      const cardH = cardW / CARD_RATIO;
-      const drumR = isMobile ? cardH * 1.85 : cardH * DRUM_MULT;
-      const ringR = isMobile ? cardH * 0.96 : cardH * RING_MULT;
-      const ringScale = isMobile
-        ? 0.70
-        : clamp(
-            (((2 * Math.PI * ringR) / count) * 0.82) / (cardW || 1),
-            0.62,
-            0.78
-          );
-      const bow = cardH * BOW_MULT;
-      const depth = cardH * LENS_MULT;
+        ? Math.min(w * 0.44, 330)
+        : Math.min(h * 0.48, w * 0.30, 360);
 
-      return { cardW, cardH, drumR, ringR, ringScale, bow, depth };
+      // In static mode, the 4 coins in a row fit comfortably across the screen:
+      const staticSize = isMobile
+        ? Math.min(w * 0.20, 74)
+        : isTablet
+        ? Math.min(w * 0.16, 125)
+        : Math.min(w * 0.13, h * 0.22, 165);
+
+      const staticScale = staticSize / coinSize;
+      const spacing = isMobile ? staticSize * 1.25 : isTablet ? staticSize * 1.4 : staticSize * 1.6;
+      const depth = isMobile ? 1000 : 1300;
+
+      return { coinSize, staticScale, spacing, depth };
     }
 
     let metrics = calculateMetrics();
@@ -274,10 +365,10 @@ export default function WorksWheel() {
       }
       cardRefs.current.forEach((card) => {
         if (!card) return;
-        card.style.width = `${metrics.cardW}px`;
-        card.style.height = `${metrics.cardH}px`;
-        card.style.marginLeft = `${-metrics.cardW / 2}px`;
-        card.style.marginTop = `${-metrics.cardH / 2}px`;
+        card.style.width = `${metrics.coinSize}px`;
+        card.style.height = `${metrics.coinSize}px`;
+        card.style.marginLeft = `${-metrics.coinSize / 2}px`;
+        card.style.marginTop = `${-metrics.coinSize / 2}px`;
       });
     }
 
@@ -288,15 +379,18 @@ export default function WorksWheel() {
     });
     ro.observe(stageEl);
 
+    // Scroll runway: 360% gives generous cinematic pacing across all 4 clients
     const st = ScrollTrigger.create({
       trigger: containerEl,
       start: "top top",
-      end: "+=280%",
+      end: "+=360%",
       pin: true,
       anticipatePin: 1,
-      scrub: 0.8,
+      scrub: 1.0,
       onUpdate: (self) => {
-        targetTurn.current = progressToTurn(self.progress, count);
+        const { turn, morph } = progressToTurnAndMorph(self.progress);
+        targetTurn.current = turn;
+        targetMorph.current = morph;
       },
     });
 
@@ -304,68 +398,64 @@ export default function WorksWheel() {
       if (!isRunning) return;
       frameId = requestAnimationFrame(draw);
 
-      currentTurn.current += (targetTurn.current - currentTurn.current) * 0.14;
+      // Silky smooth interpolation for cinematic pacing
+      currentTurn.current += (targetTurn.current - currentTurn.current) * 0.12;
+      currentMorph.current += (targetMorph.current - currentMorph.current) * 0.12;
       currentMouse.current.x += (targetMouse.current.x - currentMouse.current.x) * 0.08;
       currentMouse.current.y += (targetMouse.current.y - currentMouse.current.y) * 0.08;
 
       const t = currentTurn.current;
-      const m = clamp(t, 0, 1);
-      const pos = Math.max(0, t - 1);
+      const m = currentMorph.current;
+      const { spacing, staticScale } = metrics;
 
-      const { drumR, ringR, ringScale, bow } = metrics;
-
-      // In static mode (m = 0), apply a gentle 3D isometric pitch (14° X-pitch, -5° Y-yaw) to give the wheel genuine depth
+      // Subtle mouse tilt for authentic 3D physical feel
       if (wheelEl) {
-        const basePitch = (1 - m) * 14;
-        const baseYaw = (1 - m) * -5;
-        const tiltX = basePitch - currentMouse.current.y * (3.5 + m * 2);
-        const tiltY = baseYaw + currentMouse.current.x * (3.5 + m * 2);
-        wheelEl.style.transform = `translateZ(${-m * drumR}px) rotateX(${tiltX.toFixed(2)}deg) rotateY(${tiltY.toFixed(2)}deg)`;
+        const tiltX = m * (-currentMouse.current.y * 5);
+        const tiltY = m * (currentMouse.current.x * 5);
+        wheelEl.style.transform = `rotateX(${tiltX.toFixed(2)}deg) rotateY(${tiltY.toFixed(2)}deg)`;
       }
 
       for (let i = 0; i < count; i++) {
         const card = cardRefs.current[i];
         if (!card) continue;
 
-        const d = i - pos;
-        const drumDeg = d * STEP_DEG;
-        const ringDeg = (i / count) * 360;
+        const state = calculateCoinState(i, t, m, spacing, staticScale);
 
-        card.style.transform = place(ringDeg, drumDeg, ringR, drumR, bow, m);
+        card.style.transform =
+          `translateX(${state.x.toFixed(1)}px)` +
+          ` translateY(${state.y.toFixed(1)}px)` +
+          ` translateZ(${state.z.toFixed(1)}px)` +
+          ` rotateY(${state.rotY.toFixed(2)}deg)` +
+          ` scale(${state.scale.toFixed(3)})`;
 
-        const absD = Math.abs(d);
-        if (m > 0.6 && absD > CULL_DIST) {
-          card.style.opacity = "0";
-          card.style.pointerEvents = "none";
-          card.style.visibility = "hidden";
+        card.style.opacity = state.opacity.toFixed(3);
+        const d = Math.abs(t - i);
+        card.style.zIndex = String(Math.round(100 - d * 25));
+
+        // When in coin mode, active coin is clickable; all coins clickable in static mode
+        if (m > 0.4) {
+          card.style.pointerEvents = d <= 0.4 ? "auto" : "none";
         } else {
-          card.style.visibility = "visible";
           card.style.pointerEvents = "auto";
-
-          const drumOpacity = Math.max(0.2, 1 - absD * 0.45);
-          const opacity = lerp(0.95, drumOpacity, m);
-
-          const blurAmount = lerp(0, Math.min(5, absD * 3), m);
-          const brightness = lerp(0.95, Math.max(0.45, 1 - absD * 0.4), m);
-
-          card.style.opacity = opacity.toFixed(3);
-          card.style.filter = `blur(${blurAmount.toFixed(1)}px) brightness(${brightness.toFixed(2)})`;
-          card.style.zIndex = String(Math.round(100 - absD * 20));
-        }
-
-        const face = cardFaceRefs.current[i];
-        if (face) {
-          face.style.transform = `scale(${lerp(ringScale, 1, m)})`;
-        }
-
-        const img = cardImgRefs.current[i];
-        if (img) {
-          const panY = -d * 10 * m;
-          img.style.transform = `translateY(${panY.toFixed(1)}px) scale(${lerp(1.02, 1.05 - absD * 0.04, m).toFixed(3)})`;
         }
       }
 
-      const near = clamp(Math.round(pos), 0, count - 1);
+      // Smooth scroll-linked client title cross-fade (completely hidden in static mode)
+      for (let i = 0; i < count; i++) {
+        const textEl = textRefs.current[i];
+        if (!textEl) continue;
+        const diff = t - i;
+        const absDiff = Math.abs(diff);
+        const opacity = Math.max(0, 1 - absDiff * 2.2) * m;
+        const translateY = -diff * 18;
+
+        textEl.style.opacity = opacity.toFixed(3);
+        textEl.style.transform = `translate3d(0, ${translateY.toFixed(1)}px, 0)`;
+        textEl.style.pointerEvents = opacity > 0.6 ? "auto" : "none";
+        textEl.style.visibility = opacity > 0.01 ? "visible" : "hidden";
+      }
+
+      const near = clamp(Math.round(t), 0, count - 1);
       setActiveItem((prev) => (prev !== near ? near : prev));
       setIsRingView(m < 0.4);
     };
@@ -377,50 +467,16 @@ export default function WorksWheel() {
       cancelAnimationFrame(frameId);
       ro.disconnect();
       st.kill();
+      if (lenis?.off) {
+        lenis.off("scroll", ScrollTrigger.update);
+      }
     };
   }, [count]);
 
   const handleCardClick = (i: number) => {
-    if (isRingView) {
-      scrollToCard(i);
-    } else {
-      if (activeItem === i) {
-        setModalClient(CLIENT_WORKS[i]);
-      } else {
-        scrollToCard(i);
-      }
-    }
+    setActiveItem(i);
+    setModalClient(CLIENT_WORKS[i]);
   };
-
-  const scrollToCard = useCallback(
-    (index: number) => {
-      if (!containerRef.current) return;
-      const st =
-        ScrollTrigger.getAll().find((s) => s.trigger === containerRef.current);
-      if (!st) {
-        targetTurn.current = index + 1;
-        return;
-      }
-
-      const progressFraction = 0.24 + (index / (count - 1)) * 0.74;
-      const targetScroll = st.start + progressFraction * (st.end - st.start);
-
-      const lenis = (
-        window as unknown as {
-          __lenis?: {
-            scrollTo: (target: number, opts?: { duration?: number }) => void;
-          };
-        }
-      ).__lenis;
-
-      if (lenis) {
-        lenis.scrollTo(targetScroll, { duration: 1.2 });
-      } else {
-        window.scrollTo({ top: targetScroll, behavior: "smooth" });
-      }
-    },
-    [count]
-  );
 
   const activeClient = CLIENT_WORKS[activeItem] || CLIENT_WORKS[0];
 
@@ -439,7 +495,7 @@ export default function WorksWheel() {
             alt="Client Works Atmospheric Background"
             className="w-full h-full object-cover object-center select-none filter brightness-125 contrast-115 opacity-85"
           />
-          {/* Subtle top/bottom edge gradients to blend seamlessly with Section 3 and next section */}
+          {/* Subtle top/bottom edge gradients to blend seamlessly with surrounding sections */}
           <div className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-black via-black/60 to-transparent z-10" />
           <div className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-black via-black/60 to-transparent z-10" />
         </div>
@@ -454,26 +510,26 @@ export default function WorksWheel() {
           </div>
 
           <div className="font-mono text-xs text-zinc-500 tracking-widest uppercase">
-            {isRingView ? "ALL" : `${activeClient.number} / 0${count}`}
+            {isRingView ? "" : `${activeClient.number} / 0${count}`}
           </div>
         </div>
 
-        {/* ── 3D MORPHING WHEEL STAGE ── */}
+        {/* ── 3D COIN FLIP STAGE ── */}
         <div
           ref={stageRef}
           role="region"
-          aria-label="3D Works Wheel"
+          aria-label="3D Client Coins"
           className="relative z-10 w-full flex-1 my-auto overflow-hidden outline-none flex items-center justify-center"
-          style={{ perspective: "1400px", transformStyle: "preserve-3d" }}
+          style={{ perspective: "1300px", transformStyle: "preserve-3d" }}
         >
-          {/* 3D Wheel Anchor */}
+          {/* 3D Coin Stage Anchor */}
           <div
             ref={wheelRef}
             className="absolute top-1/2 left-1/2 pointer-events-none"
             style={{ transformStyle: "preserve-3d" }}
           >
             {CLIENT_WORKS.map((client, i) => {
-              const isActive = !isRingView && activeItem === i;
+              const isActive = activeItem === i;
               return (
                 <div
                   key={client.id}
@@ -481,44 +537,80 @@ export default function WorksWheel() {
                     cardRefs.current[i] = el;
                   }}
                   onClick={() => handleCardClick(i)}
-                  className="group absolute cursor-pointer pointer-events-auto [backface-visibility:hidden] will-change-transform"
-                  style={{ transformStyle: "preserve-3d" }}
+                  className="group absolute cursor-pointer pointer-events-auto select-none"
+                  style={{
+                    transformStyle: "preserve-3d",
+                    willChange: "transform, opacity",
+                  }}
                 >
                   <div
-                    ref={(el) => {
-                      cardFaceRefs.current[i] = el;
-                    }}
-                    className={`relative w-full h-full overflow-hidden rounded-2xl bg-zinc-950/90 border transition-all duration-300 will-change-transform origin-center ${
+                    className={`relative w-full h-full rounded-full transition-shadow duration-300 ${
                       isActive
-                        ? "border-cyan-400/80 shadow-[0_25px_60px_rgba(0,0,0,0.95),0_0_35px_rgba(6,182,212,0.22)]"
-                        : "border-zinc-800/80 shadow-[0_15px_35px_rgba(0,0,0,0.9)] hover:border-zinc-600"
+                        ? "shadow-[0_0_45px_rgba(34,211,238,0.3)]"
+                        : "shadow-[0_15px_35px_rgba(0,0,0,0.85)] hover:shadow-[0_0_25px_rgba(34,211,238,0.2)]"
                     }`}
+                    style={{ transformStyle: "preserve-3d" }}
                   >
-                    <img
-                      ref={(el) => {
-                        cardImgRefs.current[i] = el;
-                      }}
-                      src={client.image}
-                      alt={client.title}
-                      draggable={false}
-                      className="w-full h-full object-cover select-none pointer-events-none transition-transform duration-100 ease-out filter brightness-95"
+                    {/* 3D Physical Coin Rim / Edge */}
+                    <div
+                      className="absolute inset-0 rounded-full border-[3px] border-zinc-800/90 pointer-events-none"
+                      style={{ transform: "translateZ(0px)" }}
                     />
 
-                    {/* Gradient Overlay for Legibility */}
-                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/35 to-transparent" />
+                    {/* ── OBVERSE (FRONT: PURE MINIMAL LOGO MEDALLION) ── */}
+                    <div
+                      className={`absolute inset-0 w-full h-full rounded-full overflow-hidden flex items-center justify-center p-8 sm:p-10 border transition-all duration-300 bg-zinc-950/90 ${
+                        isActive
+                          ? "border-cyan-400/80 shadow-[0_0_35px_rgba(34,211,238,0.25)]"
+                          : "border-zinc-800 hover:border-zinc-600"
+                      }`}
+                      style={{
+                        backfaceVisibility: "hidden",
+                        WebkitBackfaceVisibility: "hidden",
+                        transform: "translateZ(3px)",
+                      }}
+                    >
+                      {/* Dark luxury radial backdrop */}
+                      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,rgba(39,39,42,0.45)_0%,rgba(9,9,11,0.98)_75%)]" />
 
-                    {/* Sleek Minimalist Label */}
-                    <div className="pointer-events-none absolute left-4 bottom-3.5 right-4 flex items-end justify-between">
-                      <div className="max-w-[85%]">
-                        <span className="text-[10px] font-mono text-cyan-400 tracking-wider uppercase">
-                          {`${client.number} // ${client.category}`}
-                        </span>
-                        <h4 className="font-hero text-sm sm:text-base text-white uppercase tracking-tight truncate mt-0.5 drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
-                          {client.title}
-                        </h4>
-                      </div>
+                      {/* Chamfered concentric inner ring */}
+                      <div className="pointer-events-none absolute inset-2.5 rounded-full border border-white/[0.08]" />
 
-                      <ArrowUpRight className="w-4 h-4 text-zinc-400 group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-200" />
+                      {/* Pure Centered Client Logo */}
+                      <img
+                        src={client.image}
+                        alt={client.title}
+                        draggable={false}
+                        className="relative z-10 max-h-[64%] max-w-[64%] object-contain select-none pointer-events-none drop-shadow-[0_4px_20px_rgba(0,0,0,0.9)] filter brightness-105"
+                      />
+                    </div>
+
+                    {/* ── REVERSE (BACK: IDENTICAL UPRIGHT LOGO MEDALLION, NEVER MIRRORED) ── */}
+                    <div
+                      className={`absolute inset-0 w-full h-full rounded-full overflow-hidden flex items-center justify-center p-8 sm:p-10 border transition-all duration-300 bg-zinc-950/90 ${
+                        isActive
+                          ? "border-cyan-400/80 shadow-[0_0_35px_rgba(34,211,238,0.25)]"
+                          : "border-zinc-800"
+                      }`}
+                      style={{
+                        backfaceVisibility: "hidden",
+                        WebkitBackfaceVisibility: "hidden",
+                        transform: "rotateY(180deg) translateZ(3px)",
+                      }}
+                    >
+                      {/* Dark luxury radial backdrop */}
+                      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,rgba(39,39,42,0.45)_0%,rgba(9,9,11,0.98)_75%)]" />
+
+                      {/* Chamfered concentric inner ring */}
+                      <div className="pointer-events-none absolute inset-2.5 rounded-full border border-white/[0.08]" />
+
+                      {/* Pure Centered Client Logo (Identical, counter-rotated so never reverted) */}
+                      <img
+                        src={client.image}
+                        alt={client.title}
+                        draggable={false}
+                        className="relative z-10 max-h-[64%] max-w-[64%] object-contain select-none pointer-events-none drop-shadow-[0_4px_20px_rgba(0,0,0,0.9)] filter brightness-105"
+                      />
                     </div>
                   </div>
                 </div>
@@ -527,37 +619,37 @@ export default function WorksWheel() {
           </div>
         </div>
 
-        {/* ── MINIMAL FOOTER HUD ── */}
-        <div className="relative z-10 w-full max-w-6xl mx-auto flex items-center justify-between pt-4 border-t border-zinc-800/60">
-          <div>
-            {!isRingView && (
+        {/* ── ULTRA-MINIMAL CLIENT TITLE & LINK (ZERO NOISE, SILENT IN STATIC VIEW) ── */}
+        <div className="relative z-10 w-full max-w-xl mx-auto h-16 sm:h-20 select-none">
+          {CLIENT_WORKS.map((client, idx) => (
+            <div
+              key={client.id}
+              ref={(el) => {
+                textRefs.current[idx] = el;
+              }}
+              className="absolute inset-0 flex flex-col items-center justify-center text-center will-change-transform"
+              style={{
+                opacity: 0,
+                visibility: "hidden",
+              }}
+            >
+              <h3
+                onClick={() => setModalClient(client)}
+                className="font-hero text-xl sm:text-2xl md:text-3xl text-white uppercase tracking-tight cursor-pointer hover:text-cyan-400 transition-colors drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)]"
+              >
+                {client.title}
+              </h3>
               <a
-                href={activeClient.websiteUrl}
+                href={client.websiteUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-xs font-mono text-zinc-400 hover:text-cyan-400 transition-colors cursor-pointer"
+                className="inline-flex items-center gap-1.5 text-xs font-mono text-zinc-400 hover:text-white transition-colors mt-1 cursor-pointer"
               >
-                <span>{activeClient.website}</span>
+                <span>{client.website}</span>
                 <ArrowUpRight className="w-3.5 h-3.5" />
               </a>
-            )}
-          </div>
-
-          {/* Minimalist Pacing Dashes */}
-          <div className="flex items-center gap-2">
-            {CLIENT_WORKS.map((client, idx) => (
-              <button
-                key={client.id}
-                onClick={() => scrollToCard(idx)}
-                aria-label={client.title}
-                className={`transition-all duration-300 rounded-full cursor-pointer ${
-                  !isRingView && activeItem === idx
-                    ? "w-6 h-1 bg-white"
-                    : "w-2 h-1 bg-zinc-700 hover:bg-zinc-500"
-                }`}
-              />
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
       </div>
 
@@ -592,13 +684,23 @@ export default function WorksWheel() {
               </button>
             </div>
 
-            {/* Modal Visual */}
-            <div className="relative w-full aspect-video rounded-xl overflow-hidden border border-zinc-800 bg-black shadow-inner">
-              <img
-                src={modalClient.image}
-                alt={modalClient.title}
-                className="w-full h-full object-cover object-top"
-              />
+            {/* Modal Visual: Cohesive Circular Emblem Presentation */}
+            <div className="relative w-full py-10 sm:py-14 rounded-2xl overflow-hidden border border-zinc-800 bg-zinc-950/90 flex flex-col items-center justify-center shadow-inner">
+              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(34,211,238,0.12)_0%,rgba(9,9,11,0.98)_75%)]" />
+
+              {/* Circular Emblem */}
+              <div className="relative z-10 w-36 h-36 sm:w-44 sm:h-44 rounded-full border-2 border-cyan-400/80 bg-zinc-900/90 p-6 flex items-center justify-center shadow-[0_0_45px_rgba(34,211,238,0.25),0_15px_35px_rgba(0,0,0,0.9)]">
+                <div className="pointer-events-none absolute inset-2 rounded-full border border-white/10" />
+                <img
+                  src={modalClient.image}
+                  alt={modalClient.title}
+                  className="max-h-full max-w-[75%] object-contain drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)] filter brightness-105"
+                />
+              </div>
+
+              <span className="relative z-10 mt-4 text-[10px] font-mono text-cyan-400 tracking-[0.25em] uppercase">
+                {`${modalClient.category} // ${modalClient.number}`}
+              </span>
             </div>
 
             {/* Narrative & Highlights */}

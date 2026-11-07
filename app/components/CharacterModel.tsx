@@ -215,6 +215,19 @@ export default function CharacterModel() {
       window.removeEventListener("mousemove", handleWindowMouseMove);
       window.removeEventListener("resize", handleResize);
       cancelAnimationFrame(animId);
+
+      scene.traverse((obj) => {
+        if ((obj as THREE.Mesh).isMesh) {
+          const mesh = obj as THREE.Mesh;
+          mesh.geometry?.dispose();
+          if (Array.isArray(mesh.material)) {
+            mesh.material.forEach((mat) => mat.dispose());
+          } else if (mesh.material) {
+            mesh.material.dispose();
+          }
+        }
+      });
+
       renderer.dispose();
       if (container.contains(renderer.domElement)) {
         container.removeChild(renderer.domElement);

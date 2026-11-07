@@ -1,0 +1,155 @@
+# =======================================================================
+# SOHAM BHUNIYA PORTFOLIO — APACHE / LITESPEED PRODUCTION CONFIGURATION
+# Hardened Security, Compression, Caching & Routing
+# =======================================================================
+
+# -----------------------------------------------------------------------
+# 01. PREVENT DIRECTORY BROWSING
+# -----------------------------------------------------------------------
+Options -Indexes -MultiViews
+
+# -----------------------------------------------------------------------
+# 02. UTF-8 ENCODING BY DEFAULT
+# -----------------------------------------------------------------------
+AddDefaultCharset UTF-8
+DefaultLanguage en-US
+
+# -----------------------------------------------------------------------
+# 03. HARDENED SECURITY HEADERS
+# -----------------------------------------------------------------------
+<IfModule mod_headers.c>
+  # Enforce HTTPS with HTTP Strict Transport Security (HSTS)
+  Header always set Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
+
+  # Prevent MIME sniffing
+  Header always set X-Content-Type-Options "nosniff"
+
+  # Prevent Clickjacking (disallow framing)
+  Header always set X-Frame-Options "DENY"
+
+  # Legacy XSS protection
+  Header always set X-XSS-Protection "1; mode=block"
+
+  # Referrer policy
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
+  # Restrict device APIs & tracking
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), browsing-topics=()"
+
+  # Cross-Origin Opener Policy
+  Header always set Cross-Origin-Opener-Policy "same-origin"
+
+  # Remove server fingerprint
+  Header unset X-Powered-By
+</IfModule>
+
+# -----------------------------------------------------------------------
+# 04. BLOCK ACCESS TO SENSITIVE FILES & DIRECTORIES
+# -----------------------------------------------------------------------
+# Block hidden dotfiles (.git, .env, .DS_Store, etc.)
+<FilesMatch "^\.">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order deny,allow
+    Deny from all
+  </IfModule>
+</FilesMatch>
+
+# Allow .htaccess itself to not throw misconfigured errors while keeping it protected
+<Files ".htaccess">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+</Files>
+
+# Block configuration, package & log files
+<FilesMatch "(package\.json|package-lock\.json|tsconfig\.json|next\.config\.(ts|js|mjs)|README\.md|AGENTS\.md|\.env.*|\.log)$">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order deny,allow
+    Deny from all
+  </IfModule>
+</FilesMatch>
+
+# -----------------------------------------------------------------------
+# 05. HTTPS REDIRECTION & ROUTING
+# -----------------------------------------------------------------------
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Force HTTPS on standard ports
+  RewriteCond %{HTTPS} off
+  RewriteCond %{HTTP:X-Forwarded-Proto} !https
+  RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+  # Clean URLs / Static route handling
+  # If requested as /developer without extension, serve /developer.html if it exists
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{DOCUMENT_ROOT}/$1.html -f
+  RewriteRule ^([^/]+)/?$ $1.html [L]
+</IfModule>
+
+# -----------------------------------------------------------------------
+# 06. MIME TYPE DEFINITIONS
+# -----------------------------------------------------------------------
+<IfModule mod_mime.c>
+  AddType model/gltf-binary               .glb
+  AddType model/gltf+json                 .gltf
+  AddType image/svg+xml                   .svg .svgz
+  AddType image/webp                      .webp
+  AddType font/woff2                      .woff2
+  AddType font/woff                       .woff
+  AddType application/json                .json
+  AddType application/javascript          .js .mjs
+</IfModule>
+
+# -----------------------------------------------------------------------
+# 07. GZIP & DEFLATE COMPRESSION
+# -----------------------------------------------------------------------
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/plain
+  AddOutputFilterByType DEFLATE text/html
+  AddOutputFilterByType DEFLATE text/xml
+  AddOutputFilterByType DEFLATE text/css
+  AddOutputFilterByType DEFLATE application/xml
+  AddOutputFilterByType DEFLATE application/xhtml+xml
+  AddOutputFilterByType DEFLATE application/rss+xml
+  AddOutputFilterByType DEFLATE application/javascript
+  AddOutputFilterByType DEFLATE application/x-javascript
+  AddOutputFilterByType DEFLATE application/json
+  AddOutputFilterByType DEFLATE image/svg+xml
+  AddOutputFilterByType DEFLATE model/gltf+json
+</IfModule>
+
+# -----------------------------------------------------------------------
+# 08. BROWSER CACHING HEADERS
+# -----------------------------------------------------------------------
+<IfModule mod_expires.c>
+  ExpiresActive On
+
+  # HTML documents - revalidate immediately
+  ExpiresByType text/html                 "access plus 0 seconds"
+
+  # Static images, media & 3D models - 1 year
+  ExpiresByType image/jpeg                "access plus 1 year"
+  ExpiresByType image/png                 "access plus 1 year"
+  ExpiresByType image/svg+xml             "access plus 1 year"
+  ExpiresByType image/webp                "access plus 1 year"
+  ExpiresByType model/gltf-binary         "access plus 1 year"
+  ExpiresByType model/gltf+json           "access plus 1 year"
+
+  # Fonts - 1 year
+  ExpiresByType font/woff2                "access plus 1 year"
+  ExpiresByType font/woff                 "access plus 1 year"
+
+  # CSS & JavaScript - 1 year (Next.js creates unique hashes)
+  ExpiresByType text/css                  "access plus 1 year"
+  ExpiresByType application/javascript    "access plus 1 year"
+</IfModule>
+

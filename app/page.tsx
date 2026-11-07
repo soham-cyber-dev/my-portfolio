@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useRef, useEffect } from "react";
+import Link from "next/link";
+import { Terminal, ArrowUpRight } from "lucide-react";
 import CharacterModel from "./components/CharacterModel";
 import StorytellingSection from "./components/StorytellingSection";
 import ProjectsSection from "./components/ProjectsSection";
@@ -84,6 +86,25 @@ export default function Home() {
         onMouseLeave={handleMouseLeave}
         className="relative min-h-screen w-full bg-black text-white flex flex-col justify-between overflow-hidden selection:bg-white selection:text-black cursor-default"
       >
+        {/* TOP BAR / MODE SWITCH NAVIGATION */}
+        <div className="fixed top-6 inset-x-6 md:inset-x-12 lg:inset-x-16 z-[1002] flex items-center justify-between pointer-events-none select-none">
+          {/* Creative Mode Whisper */}
+          <div className="pointer-events-auto hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-zinc-950/80 backdrop-blur-md border border-zinc-800 text-[10px] font-mono tracking-[0.2em] text-zinc-400 uppercase">
+            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+            <span>CREATIVE MODE</span>
+          </div>
+
+          {/* Clean Minimal Developer Mode Button */}
+          <Link
+            href="/developer"
+            className="pointer-events-auto group ml-auto inline-flex items-center gap-2 px-4 py-2 rounded-full bg-zinc-950/80 backdrop-blur-md border border-zinc-800 hover:border-zinc-500 text-zinc-300 hover:text-white font-mono text-xs tracking-wider uppercase transition-all duration-300 active:scale-95 shadow-lg cursor-pointer"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            <Terminal className="w-3.5 h-3.5 text-zinc-400 group-hover:text-cyan-400 transition-colors" />
+            <span>DEVELOPER MODE</span>
+            <ArrowUpRight className="w-3.5 h-3.5 text-zinc-500 group-hover:text-white transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+          </Link>
+        </div>
         {/* LAYER 0: BASE HERO BACKGROUND */}
         <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
           <img
@@ -137,31 +158,12 @@ export default function Home() {
         </div>
 
         {/* LAYER 4: MAIN INTERACTIVE UI CONTENT */}
-        <div className="relative z-[20] flex-1 flex flex-col justify-between px-6 md:px-12 lg:px-16 pt-6 md:pt-10 pb-10 w-full max-w-[1500px] mx-auto pointer-events-none">
+        <div className="relative z-[20] flex-1 flex flex-col justify-between px-6 md:px-12 lg:px-16 pt-6 md:pt-10 pb-12 w-full max-w-[1500px] mx-auto pointer-events-none">
           <div className="w-full invisible pointer-events-none pt-2 sm:pt-4 md:pt-6" aria-hidden="true">
             <h1 className="flex flex-col items-center justify-center leading-[0.88] tracking-[-0.025em] uppercase font-hero text-center w-full">
               <span className="text-[15vw] md:text-[14.5vw] lg:text-[13.5vw]">SOFTWARE</span>
               <span className="text-[15vw] md:text-[14.5vw] lg:text-[13.5vw] -mt-[0.04em]">DEVELOPER</span>
             </h1>
-          </div>
-
-          <div className="w-full flex justify-center sm:justify-end mt-12 md:mt-16 pointer-events-auto">
-            <div className="flex flex-col sm:flex-row items-center sm:items-center justify-center sm:justify-end gap-4 w-full md:w-auto">
-              <a
-                href="#about"
-                onClick={(e) => {
-                  const lenis = (window as unknown as { __lenis?: { scrollTo: (target: string, opts?: { offset?: number; duration?: number }) => void } }).__lenis;
-                  if (lenis) {
-                    e.preventDefault();
-                    lenis.scrollTo("#about", { offset: 0, duration: 1.4 });
-                  }
-                }}
-                className="group relative inline-flex items-center justify-center px-7 py-3 rounded-md bg-black/60 backdrop-blur-sm border border-zinc-600 text-zinc-200 font-mono text-xs tracking-widest uppercase transition-all duration-300 hover:border-white hover:text-white hover:bg-black/80 active:scale-[0.98]"
-              >
-                <span>Explore</span>
-                <span className="ml-2 transition-transform duration-300 group-hover:translate-x-1">→</span>
-              </a>
-            </div>
           </div>
         </div>
 

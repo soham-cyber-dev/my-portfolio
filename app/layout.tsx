@@ -21,8 +21,48 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "SOHAM — Software Developer",
-  description: "An immersive world of curious creatures, magical places, and stories waiting to be discovered.",
+  title: "Soham Bhuniya — Full-Stack Software Developer & Systems Architect",
+  description:
+    "Portfolio of Soham Bhuniya, Full-Stack Software Developer and CSE student from Kolkata, India. Engineering robust web architectures, distributed APIs, and immersive digital experiences.",
+  keywords: [
+    "Soham Bhuniya",
+    "Software Developer",
+    "Full-Stack Engineer",
+    "Next.js",
+    "React",
+    "TypeScript",
+    "Node.js",
+    "Web Architecture",
+    "Kolkata",
+    "Portfolio",
+  ],
+  authors: [{ name: "Soham Bhuniya" }],
+  creator: "Soham Bhuniya",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    title: "Soham Bhuniya — Full-Stack Software Developer",
+    description:
+      "Engineering robust web architectures, distributed APIs, and immersive digital experiences.",
+    siteName: "Soham Bhuniya Portfolio",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Soham Bhuniya — Full-Stack Software Developer",
+    description:
+      "Engineering robust web architectures, distributed APIs, and immersive digital experiences.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
 };
 
 export default function RootLayout({

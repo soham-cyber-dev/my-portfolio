@@ -94,6 +94,7 @@ const PROJECTS: Project[] = [
 ];
 
 const smoothstep = (min: number, max: number, value: number) => {
+  if (max <= min) return 0;
   const x = Math.max(0, Math.min(1, (value - min) / (max - min)));
   return x * x * (3 - 2 * x);
 };
